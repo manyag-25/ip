@@ -55,45 +55,77 @@ public class Mercury {
                 if (description.isEmpty()){
                     System.out.print("oops todo must be followed by the action item");
                 }
-                String[] newTask = {"T", " ", description, ""};
-                userlist.add(newTask);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("[T][ ] " + description);
-                System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                else {
+                    String[] newTask = {"T", " ", description, ""};
+                    userlist.add(newTask);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("[T][ ] " + description);
+                    System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                }
             }
             else if (userinput.startsWith("deadline ")) {
                 String rest = userinput.substring(9);
                 if (rest.isEmpty()){
                     System.out.print("oops deadline must be followed by the action item");
                 }
-                int byIndex = rest.indexOf("/by");
-                if (byIndex != -1) {
-                    String description = rest.substring(0, byIndex).trim();
-                    String datetime = "(by:" + rest.substring(byIndex + 3).trim() + ")";
-                    String[] newTask = {"D", " ", description, datetime};
-                    userlist.add(newTask);
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("[D][ ] " + description + " " + datetime);
-                    System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                else {
+                    int byIndex = rest.indexOf("/by");
+                    if (byIndex != -1) {
+                        String description = rest.substring(0, byIndex).trim();
+                        String datetime = "(by:" + rest.substring(byIndex + 3).trim() + ")";
+                        String[] newTask = {"D", " ", description, datetime};
+                        userlist.add(newTask);
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("[D][ ] " + description + " " + datetime);
+                        System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                    }
                 }
             }
             else if (userinput.startsWith("event ")) {
                 String rest = userinput.substring(6);
-                if (rest.isEmpty()){
+                if (rest.isEmpty()) {
                     System.out.print("oops event must be followed by the action item");
                 }
-                int fromIndex = rest.indexOf("/from");
-                int toIndex = rest.indexOf("/to");
-                if (fromIndex != -1 && toIndex != -1) {
-                    String description = rest.substring(0, fromIndex).trim();
-                    String fromTime = rest.substring(fromIndex + 5, toIndex).trim();
-                    String toTime = rest.substring(toIndex + 3).trim();
-                    String datetime = "(from:" + fromTime + " to:" + toTime + ")";
-                    String[] newTask = {"E", " ", description, datetime};
-                    userlist.add(newTask);
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("[E][ ] " + description + " " + datetime);
-                    System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                else {
+                    int fromIndex = rest.indexOf("/from");
+                    int toIndex = rest.indexOf("/to");
+                    if (fromIndex != -1 && toIndex != -1) {
+                        String description = rest.substring(0, fromIndex).trim();
+                        String fromTime = rest.substring(fromIndex + 5, toIndex).trim();
+                        String toTime = rest.substring(toIndex + 3).trim();
+                        String datetime = "(from:" + fromTime + " to:" + toTime + ")";
+                        String[] newTask = {"E", " ", description, datetime};
+                        userlist.add(newTask);
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("[E][ ] " + description + " " + datetime);
+                        System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                    }
+                }
+            }
+            else if (userinput.startsWith("delete ")) {
+                String indexStr = userinput.substring(7).trim();
+                if (indexStr.isEmpty()) {
+                    System.out.println("oops delete must be followed by a task number");
+                }
+                else {
+                    try {
+                        int taskIndex = Integer.parseInt(indexStr) - 1;
+                        if (taskIndex >= 0 && taskIndex < userlist.size()) {
+                            String[] removedTask = userlist.get(taskIndex);
+                            userlist.remove(taskIndex);
+                            System.out.println("Noted. I've removed this task:");
+                            System.out.print("  [" + removedTask[0] + "][" + removedTask[1] + "] " + removedTask[2]);
+                            if (!removedTask[3].isEmpty()) {
+                                System.out.print(" " + removedTask[3]);
+                            }
+                            System.out.println();
+                            System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                        } else {
+                            System.out.println("oops that task number doesn't exist");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("oops please provide a valid task number");
+                    }
                 }
             }
             else {

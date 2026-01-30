@@ -35,6 +35,7 @@ public class Mercury {
                     }
                     System.out.println();
                 }
+                else {System.out.print("oops plz specify what to mark done");}
             }
             else if (userinput.startsWith("unmark")) {
                 int taskIndex = Integer.parseInt(userinput.substring(7)) - 1;
@@ -47,9 +48,13 @@ public class Mercury {
                     }
                     System.out.println();
                 }
+                else {System.out.print("oops plz specify what to mark undone");}
             }
             else if (userinput.startsWith("todo ")) {
                 String description = userinput.substring(5);
+                if (description.isEmpty()){
+                    System.out.print("oops todo must be followed by the action item");
+                }
                 String[] newTask = {"T", " ", description, ""};
                 userlist.add(newTask);
                 System.out.println("Got it. I've added this task:");
@@ -58,6 +63,9 @@ public class Mercury {
             }
             else if (userinput.startsWith("deadline ")) {
                 String rest = userinput.substring(9);
+                if (rest.isEmpty()){
+                    System.out.print("oops deadline must be followed by the action item");
+                }
                 int byIndex = rest.indexOf("/by");
                 if (byIndex != -1) {
                     String description = rest.substring(0, byIndex).trim();
@@ -71,6 +79,9 @@ public class Mercury {
             }
             else if (userinput.startsWith("event ")) {
                 String rest = userinput.substring(6);
+                if (rest.isEmpty()){
+                    System.out.print("oops event must be followed by the action item");
+                }
                 int fromIndex = rest.indexOf("/from");
                 int toIndex = rest.indexOf("/to");
                 if (fromIndex != -1 && toIndex != -1) {

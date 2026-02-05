@@ -3,12 +3,10 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.io.FileNotFoundException;
 
 public class Mercury {
-    private static final String FILE_PATH = "./data/mercury_list.txt";
+    private static final String FILE_PATH = "./data/duke.txt";
 
     public static void main(String[] args) {
         String name = "Mercury";
@@ -182,14 +180,25 @@ public class Mercury {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split("\\|");
-                if (parts.length >= 3) {
-                    // parts[0] = Type, parts[1] = Status, parts[2] = Description, parts[3] = Time (optional)
-                    String type = parts[0];
-                    String status = parts[1];
-                    String description = parts[2];
-                    String time = (parts.length > 3) ? parts[3] : "";
-                    tasks.add(new String[]{type, status, description, time});
+                // Validate format: at least Type, Status, Description
+                if (parts.length < 3 || 
+                    (!parts[0].equals("T") && !parts[0].equals("D") && !parts[0].equals("E")) ||
+                    (!parts[1].equals(" ") && !parts[1].equals("X"))) {
+                    System.out.println("Warning: Corrupted line ignored: " + line);
+                    continue;
                 }
+
+                // Additional validation for Deadline and Event (must have time)
+                if ((parts[0].equals("D") || parts[0].equals("E")) && parts.length < 4) {
+                     System.out.println("Warning: Corrupted line ignored (missing time): " + line);
+                     continue;
+                }
+                
+                String type = parts[0];
+                String status = parts[1];
+                String description = parts[2];
+                String time = (parts.length > 3) ? parts[3] : "";
+                tasks.add(new String[]{type, status, description, time});
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error loading tasks: " + e.getMessage());

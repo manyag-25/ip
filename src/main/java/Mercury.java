@@ -1,54 +1,80 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.FileNotFoundException;
 
 public class Mercury {
+    private static final String FILE_PATH = "./data/mercury_list.txt";
+
     public static void main(String[] args) {
         String name = "Mercury";
         System.out.println("Hello! I'm " + name + "\n" + "What can I do for you?");
         System.out.println("_________________________________________________");
+        
+        ArrayList<String[]> userlist = loadTasks(); // Load tasks on startup
+
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
         String userinput = myObj.nextLine();  // Read user input
-        ArrayList<String[]> userlist = new ArrayList<>();
-
+        
         while (!userinput.equals("bye")) {
             System.out.println("_________________________________________________");
 
             if (userinput.equals("list")) {
-                System.out.println(userinput);
-                for (int i = 0; i < userlist.size(); i++) {
-                    String[] task = userlist.get(i);
-                    System.out.print((i + 1) + ". [" + task[0] + "][" + task[1] + "] " + task[2]);
-                    if (!task[3].isEmpty()) {
-                        System.out.print(" " + task[3]);
-                    }
-                    System.out.println();
+                if (userlist.isEmpty()) {
+                   System.out.println("No tasks found.");
+                } else {
+                   System.out.println("Here are the tasks in your list:");
+                   for (int i = 0; i < userlist.size(); i++) {
+                       String[] task = userlist.get(i);
+                       System.out.print((i + 1) + ". [" + task[0] + "][" + task[1] + "] " + task[2]);
+                       if (!task[3].isEmpty()) {
+                           System.out.print(" " + task[3]);
+                       }
+                       System.out.println();
+                   }
                 }
             }
             else if (userinput.startsWith("mark")) {
-                int taskIndex = Integer.parseInt(userinput.substring(5)) - 1;
-                if (taskIndex >= 0 && taskIndex < userlist.size()) {
-                    userlist.get(taskIndex)[1] = "X";
-                    String[] task = userlist.get(taskIndex);
-                    System.out.print("I've marked this task as done:\n  [" + task[0] + "][X] " + task[2]);
-                    if (!task[3].isEmpty()) {
-                        System.out.print(" " + task[3]);
+                try {
+                    int taskIndex = Integer.parseInt(userinput.substring(5)) - 1;
+                    if (taskIndex >= 0 && taskIndex < userlist.size()) {
+                        userlist.get(taskIndex)[1] = "X";
+                        saveTasks(userlist); // Save after change
+                        String[] task = userlist.get(taskIndex);
+                        System.out.print("I've marked this task as done:\n  [" + task[0] + "][X] " + task[2]);
+                        if (!task[3].isEmpty()) {
+                            System.out.print(" " + task[3]);
+                        }
+                        System.out.println();
+                    } else {
+                        System.out.print("oops plz specify what to mark done");
                     }
-                    System.out.println();
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                    System.out.println("oops please provide a valid task number");
                 }
-                else {System.out.print("oops plz specify what to mark done");}
             }
             else if (userinput.startsWith("unmark")) {
-                int taskIndex = Integer.parseInt(userinput.substring(7)) - 1;
-                if (taskIndex >= 0 && taskIndex < userlist.size()) {
-                    userlist.get(taskIndex)[1] = " ";
-                    String[] task = userlist.get(taskIndex);
-                    System.out.print("OK, I've marked this task as not done yet:\n  [" + task[0] + "][ ] " + task[2]);
-                    if (!task[3].isEmpty()) {
-                        System.out.print(" " + task[3]);
+                try {
+                    int taskIndex = Integer.parseInt(userinput.substring(7)) - 1;
+                    if (taskIndex >= 0 && taskIndex < userlist.size()) {
+                        userlist.get(taskIndex)[1] = " ";
+                        saveTasks(userlist); // Save after change
+                        String[] task = userlist.get(taskIndex);
+                        System.out.print("OK, I've marked this task as not done yet:\n  [" + task[0] + "][ ] " + task[2]);
+                        if (!task[3].isEmpty()) {
+                            System.out.print(" " + task[3]);
+                        }
+                        System.out.println();
+                    } else {
+                        System.out.print("oops plz specify what to mark undone");
                     }
-                    System.out.println();
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                     System.out.println("oops please provide a valid task number");
                 }
-                else {System.out.print("oops plz specify what to mark undone");}
             }
             else if (userinput.startsWith("todo ")) {
                 String description = userinput.substring(5);
@@ -58,6 +84,7 @@ public class Mercury {
                 else {
                     String[] newTask = {"T", " ", description, ""};
                     userlist.add(newTask);
+                    saveTasks(userlist); // Save after change
                     System.out.println("Got it. I've added this task:");
                     System.out.println("[T][ ] " + description);
                     System.out.println("Now you have " + userlist.size() + " tasks in the list.");
@@ -75,6 +102,7 @@ public class Mercury {
                         String datetime = "(by:" + rest.substring(byIndex + 3).trim() + ")";
                         String[] newTask = {"D", " ", description, datetime};
                         userlist.add(newTask);
+                        saveTasks(userlist); // Save after change
                         System.out.println("Got it. I've added this task:");
                         System.out.println("[D][ ] " + description + " " + datetime);
                         System.out.println("Now you have " + userlist.size() + " tasks in the list.");
@@ -96,6 +124,7 @@ public class Mercury {
                         String datetime = "(from:" + fromTime + " to:" + toTime + ")";
                         String[] newTask = {"E", " ", description, datetime};
                         userlist.add(newTask);
+                        saveTasks(userlist); // Save after change
                         System.out.println("Got it. I've added this task:");
                         System.out.println("[E][ ] " + description + " " + datetime);
                         System.out.println("Now you have " + userlist.size() + " tasks in the list.");
@@ -113,6 +142,7 @@ public class Mercury {
                         if (taskIndex >= 0 && taskIndex < userlist.size()) {
                             String[] removedTask = userlist.get(taskIndex);
                             userlist.remove(taskIndex);
+                            saveTasks(userlist); // Save after change
                             System.out.println("Noted. I've removed this task:");
                             System.out.print("  [" + removedTask[0] + "][" + removedTask[1] + "] " + removedTask[2]);
                             if (!removedTask[3].isEmpty()) {
@@ -139,5 +169,47 @@ public class Mercury {
         System.out.println("Bye. Hope to see you again soon!");
         myObj.close();
         System.exit(0);
+    }
+
+    private static ArrayList<String[]> loadTasks() {
+        ArrayList<String[]> tasks = new ArrayList<>();
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return tasks;
+        }
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split("\\|");
+                if (parts.length >= 3) {
+                    // parts[0] = Type, parts[1] = Status, parts[2] = Description, parts[3] = Time (optional)
+                    String type = parts[0];
+                    String status = parts[1];
+                    String description = parts[2];
+                    String time = (parts.length > 3) ? parts[3] : "";
+                    tasks.add(new String[]{type, status, description, time});
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+        }
+        return tasks;
+    }
+
+    private static void saveTasks(ArrayList<String[]> tasks) {
+        try {
+            File file = new File(FILE_PATH);
+            file.getParentFile().mkdirs(); // Ensure directory exists
+            FileWriter writer = new FileWriter(file);
+            for (String[] task : tasks) {
+                // Format: Type|Status|Description|Time
+                String line = task[0] + "|" + task[1] + "|" + task[2] + "|" + task[3] + "\n";
+                writer.write(line);
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
     }
 }

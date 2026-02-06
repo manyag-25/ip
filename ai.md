@@ -8,4 +8,5 @@ Week 4:
 Level-7 - used antigravity to create changes, it messed up a bit but eventually got it to work. Probably easier to manually code it though.
 Level-8 - similar experience as Level-7, but I still continued with antigravity as I am trying to do the entirety of this week's tasks with its help. It ended up creating separate files for each task, which was not what I wanted, but I eventually got it to work.
 A-MoreOOP & A-Packages - after I wrote a bit of information giving antigravity more context into how I wanted things to look like, and the structure I wanted, it was able to generate the code pretty well, with minimal errors.
-A-Gradle, A-JUnit, A-JavaDoc - antigravity successfully implemented Gradle support, JUnit tests (100% pass), and comprehensive JavaDocumentation for all classes.
+A-Gradle, A-JUnit, A-JavaDoc, A-CodingStandard - antigravity successfully implemented Gradle support, JUnit tests (100% pass), comprehensive JavaDocumentation, and aligned the entire codebase with SE-EDU coding standards.
+Level-9 - implemented search functionality with `find` command, updated UI, and added full test coverage.

@@ -7,8 +7,18 @@ import mercury.MercuryException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Parses user input into commands.
+ */
 public class Parser {
 
+    /**
+     * Parses the full command string into a Command object.
+     *
+     * @param fullCommand The full user input string.
+     * @return The parsed Command object.
+     * @throws MercuryException If the command is invalid or missing arguments.
+     */
     public static Command parse(String fullCommand) throws MercuryException {
         if (fullCommand.equals("bye")) {
             return new ExitCommand();

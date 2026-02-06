@@ -15,13 +15,27 @@ import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+/**
+ * Handles the loading and saving of tasks to a file.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Constructs a new Storage instance.
+     *
+     * @param filePath The path to the file used for storage.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the storage file.
+     *
+     * @return An ArrayList of tasks loaded from the file.
+     * @throws MercuryException If the file cannot be accessed or created.
+     */
     public ArrayList<Task> load() throws MercuryException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -81,6 +95,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the current list of tasks to the storage file.
+     *
+     * @param tasks The list of tasks to save.
+     * @throws MercuryException If the file cannot be written to.
+     */
     public void save(TaskList tasks) throws MercuryException {
         try {
             File file = new File(filePath);

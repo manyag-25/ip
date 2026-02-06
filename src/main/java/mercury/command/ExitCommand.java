@@ -4,6 +4,9 @@ import mercury.task.TaskList;
 import mercury.ui.Ui;
 import mercury.storage.Storage;
 
+/**
+ * Represents a command to exit the application.
+ */
 public class ExitCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {

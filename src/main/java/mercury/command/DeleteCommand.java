@@ -6,9 +6,17 @@ import mercury.ui.Ui;
 import mercury.storage.Storage;
 import mercury.MercuryException;
 
+/**
+ * Represents a command to delete a task.
+ */
 public class DeleteCommand extends Command {
     private int index;
 
+    /**
+     * Constructs a DeleteCommand with the index of the task to delete.
+     *
+     * @param index The zero-based index of the task to delete.
+     */
     public DeleteCommand(int index) {
         this.index = index;
     }

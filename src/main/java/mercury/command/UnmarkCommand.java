@@ -25,7 +25,7 @@ public class UnmarkCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MercuryException {
         Task task = tasks.get(index);
         task.markAsUndone();
-        System.out.println("OK, I've marked this task as not done yet:\n  " + task);
+        ui.showTaskUnmarked(task);
         storage.save(tasks);
     }
 }

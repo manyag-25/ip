@@ -1,7 +1,15 @@
 package mercury.parser;
 
-import mercury.command.*;
-import mercury.task.*;
+import mercury.command.AddCommand;
+import mercury.command.Command;
+import mercury.command.DeleteCommand;
+import mercury.command.ExitCommand;
+import mercury.command.ListCommand;
+import mercury.command.MarkCommand;
+import mercury.command.UnmarkCommand;
+import mercury.task.Deadline;
+import mercury.task.Event;
+import mercury.task.Todo;
 import mercury.MercuryException;
 
 import java.time.LocalDate;

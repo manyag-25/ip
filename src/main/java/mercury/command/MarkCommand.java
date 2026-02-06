@@ -25,7 +25,7 @@ public class MarkCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MercuryException {
         Task task = tasks.get(index);
         task.markAsDone();
-        System.out.println("I've marked this task as done:\n  " + task);
+        ui.showTaskMarked(task);
         storage.save(tasks);
     }
 }

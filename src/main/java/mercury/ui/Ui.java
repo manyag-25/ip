@@ -85,6 +85,26 @@ public class Ui {
     }
 
     /**
+     * Displays a message confirming a task has been marked as done.
+     *
+     * @param task The task that was marked.
+     */
+    public void showTaskMarked(Task task) {
+        System.out.println("I've marked this task as done:");
+        System.out.println("  " + task);
+    }
+
+    /**
+     * Displays a message confirming a task has been marked as not done.
+     *
+     * @param task The task that was unmarked.
+     */
+    public void showTaskUnmarked(Task task) {
+        System.out.println("OK, I've marked this task as not done yet:");
+        System.out.println("  " + task);
+    }
+
+    /**
      * Displays the list of all tasks.
      *
      * @param tasks The list of tasks to display.

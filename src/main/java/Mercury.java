@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Mercury {
     private static final String FILE_PATH = "./data/duke.txt";
@@ -13,7 +15,7 @@ public class Mercury {
         System.out.println("Hello! I'm " + name + "\n" + "What can I do for you?");
         System.out.println("_________________________________________________");
         
-        ArrayList<String[]> userlist = loadTasks(); // Load tasks on startup
+        ArrayList<Task> userlist = loadTasks(); // Load tasks on startup
 
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
         String userinput = myObj.nextLine();  // Read user input
@@ -27,12 +29,7 @@ public class Mercury {
                 } else {
                    System.out.println("Here are the tasks in your list:");
                    for (int i = 0; i < userlist.size(); i++) {
-                       String[] task = userlist.get(i);
-                       System.out.print((i + 1) + ". [" + task[0] + "][" + task[1] + "] " + task[2]);
-                       if (!task[3].isEmpty()) {
-                           System.out.print(" " + task[3]);
-                       }
-                       System.out.println();
+                       System.out.println((i + 1) + ". " + userlist.get(i));
                    }
                 }
             }
@@ -40,14 +37,10 @@ public class Mercury {
                 try {
                     int taskIndex = Integer.parseInt(userinput.substring(5)) - 1;
                     if (taskIndex >= 0 && taskIndex < userlist.size()) {
-                        userlist.get(taskIndex)[1] = "X";
+                        Task task = userlist.get(taskIndex);
+                        task.markAsDone();
                         saveTasks(userlist); // Save after change
-                        String[] task = userlist.get(taskIndex);
-                        System.out.print("I've marked this task as done:\n  [" + task[0] + "][X] " + task[2]);
-                        if (!task[3].isEmpty()) {
-                            System.out.print(" " + task[3]);
-                        }
-                        System.out.println();
+                        System.out.println("I've marked this task as done:\n  " + task);
                     } else {
                         System.out.print("oops plz specify what to mark done");
                     }
@@ -59,14 +52,10 @@ public class Mercury {
                 try {
                     int taskIndex = Integer.parseInt(userinput.substring(7)) - 1;
                     if (taskIndex >= 0 && taskIndex < userlist.size()) {
-                        userlist.get(taskIndex)[1] = " ";
+                        Task task = userlist.get(taskIndex);
+                        task.markAsUndone();
                         saveTasks(userlist); // Save after change
-                        String[] task = userlist.get(taskIndex);
-                        System.out.print("OK, I've marked this task as not done yet:\n  [" + task[0] + "][ ] " + task[2]);
-                        if (!task[3].isEmpty()) {
-                            System.out.print(" " + task[3]);
-                        }
-                        System.out.println();
+                        System.out.println("OK, I've marked this task as not done yet:\n  " + task);
                     } else {
                         System.out.print("oops plz specify what to mark undone");
                     }
@@ -80,11 +69,11 @@ public class Mercury {
                     System.out.print("oops todo must be followed by the action item");
                 }
                 else {
-                    String[] newTask = {"T", " ", description, ""};
+                    Task newTask = new Todo(description);
                     userlist.add(newTask);
                     saveTasks(userlist); // Save after change
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("[T][ ] " + description);
+                    System.out.println(newTask);
                     System.out.println("Now you have " + userlist.size() + " tasks in the list.");
                 }
             }
@@ -97,13 +86,20 @@ public class Mercury {
                     int byIndex = rest.indexOf("/by");
                     if (byIndex != -1) {
                         String description = rest.substring(0, byIndex).trim();
-                        String datetime = "(by:" + rest.substring(byIndex + 3).trim() + ")";
-                        String[] newTask = {"D", " ", description, datetime};
-                        userlist.add(newTask);
-                        saveTasks(userlist); // Save after change
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("[D][ ] " + description + " " + datetime);
-                        System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                        String dateStr = rest.substring(byIndex + 3).trim();
+                        try {
+                            LocalDate date = LocalDate.parse(dateStr);
+                            Task newTask = new Deadline(description, date);
+                            userlist.add(newTask);
+                            saveTasks(userlist); // Save after change
+                            System.out.println("Got it. I've added this task:");
+                            System.out.println(newTask);
+                            System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                        } catch (DateTimeParseException e) {
+                            System.out.println("oops please use yyyy-mm-dd format for deadline (e.g., 2019-12-02)");
+                        }
+                    } else {
+                        System.out.println("oops deadline must include /by");
                     }
                 }
             }
@@ -119,13 +115,14 @@ public class Mercury {
                         String description = rest.substring(0, fromIndex).trim();
                         String fromTime = rest.substring(fromIndex + 5, toIndex).trim();
                         String toTime = rest.substring(toIndex + 3).trim();
-                        String datetime = "(from:" + fromTime + " to:" + toTime + ")";
-                        String[] newTask = {"E", " ", description, datetime};
+                        Task newTask = new Event(description, fromTime, toTime);
                         userlist.add(newTask);
                         saveTasks(userlist); // Save after change
                         System.out.println("Got it. I've added this task:");
-                        System.out.println("[E][ ] " + description + " " + datetime);
+                        System.out.println(newTask);
                         System.out.println("Now you have " + userlist.size() + " tasks in the list.");
+                    } else {
+                        System.out.println("oops event must include /from and /to");
                     }
                 }
             }
@@ -138,15 +135,10 @@ public class Mercury {
                     try {
                         int taskIndex = Integer.parseInt(indexStr) - 1;
                         if (taskIndex >= 0 && taskIndex < userlist.size()) {
-                            String[] removedTask = userlist.get(taskIndex);
-                            userlist.remove(taskIndex);
+                            Task removedTask = userlist.remove(taskIndex);
                             saveTasks(userlist); // Save after change
                             System.out.println("Noted. I've removed this task:");
-                            System.out.print("  [" + removedTask[0] + "][" + removedTask[1] + "] " + removedTask[2]);
-                            if (!removedTask[3].isEmpty()) {
-                                System.out.print(" " + removedTask[3]);
-                            }
-                            System.out.println();
+                            System.out.println("  " + removedTask);
                             System.out.println("Now you have " + userlist.size() + " tasks in the list.");
                         } else {
                             System.out.println("oops that task number doesn't exist");
@@ -169,8 +161,8 @@ public class Mercury {
         System.exit(0);
     }
 
-    private static ArrayList<String[]> loadTasks() {
-        ArrayList<String[]> tasks = new ArrayList<>();
+    private static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(FILE_PATH);
         if (!file.exists()) {
             return tasks;
@@ -181,24 +173,74 @@ public class Mercury {
                 String line = scanner.nextLine();
                 String[] parts = line.split("\\|");
                 // Validate format: at least Type, Status, Description
-                if (parts.length < 3 || 
-                    (!parts[0].equals("T") && !parts[0].equals("D") && !parts[0].equals("E")) ||
-                    (!parts[1].equals(" ") && !parts[1].equals("X"))) {
+                if (parts.length < 3) {
                     System.out.println("Warning: Corrupted line ignored: " + line);
                     continue;
-                }
-
-                // Additional validation for Deadline and Event (must have time)
-                if ((parts[0].equals("D") || parts[0].equals("E")) && parts.length < 4) {
-                     System.out.println("Warning: Corrupted line ignored (missing time): " + line);
-                     continue;
                 }
                 
                 String type = parts[0];
                 String status = parts[1];
                 String description = parts[2];
-                String time = (parts.length > 3) ? parts[3] : "";
-                tasks.add(new String[]{type, status, description, time});
+
+                Task task = null;
+                try {
+                    switch (type) {
+                        case "T":
+                            task = new Todo(description);
+                            break;
+                        case "D":
+                            if (parts.length < 4) {
+                                System.out.println("Warning: Corrupted deadline ignored (missing date): " + line);
+                                continue;
+                            }
+                            LocalDate date = LocalDate.parse(parts[3]);
+                            task = new Deadline(description, date);
+                            break;
+                        case "E":
+                             if (parts.length < 4) {
+                                System.out.println("Warning: Corrupted event ignored (missing time): " + line);
+                                continue;
+                            }
+                            // Parse (from:xxx to:yyy)
+                            String timeInfo = parts[3];
+                            // Basic parsing assuming format is kept consistent (from: A to: B)
+                            // Ideally, save format would be E| |desc|from|to. 
+                            // But keeping compatibility with previous style (single time string in parts[3]) for now,
+                            // or better: Parse the "(from:xxx to:yyy)" string or just save strict fields?
+                            // Let's adjust Event to save strict fields if possible, BUT my previous code saved it as one block.
+                            // To be cleaner, let's parse the simple format I used previously: "(from:xxx to:yyy)"
+                            // OR simply treat parts[3] as the time string if I was lazy.
+                            // Wait, the new Event class I wrote takes `from` and `to`.
+                            // I should probably improve the save format for Event to be "E| |desc|from|to" to be cleaner.
+                            // BUT, I need to look at how I implemented `toFileString` in Event.java.
+                            // Checked Event.java: returns "E|X|desc|(from:x to:y)".
+                            // So parts[3] is "(from:x to:y)".
+                            // I need to extract x and y.
+                            if (timeInfo.startsWith("(from:") && timeInfo.contains(" to:") && timeInfo.endsWith(")")) {
+                                int toIndex = timeInfo.indexOf(" to:");
+                                String from = timeInfo.substring(6, toIndex); // len("(from:") = 6
+                                String to = timeInfo.substring(toIndex + 4, timeInfo.length() - 1); // len(" to:") = 4
+                                task = new Event(description, from, to);
+                            } else {
+                                // Fallback or corrupt
+                                System.out.println("Warning: Corrupted event time format ignored: " + line);
+                                continue;
+                            }
+                            break;
+                        default:
+                            System.out.println("Warning: Unknown task type ignored: " + line);
+                            continue;
+                    }
+
+                    if (task != null) {
+                        if (status.equals("X")) {
+                            task.markAsDone();
+                        }
+                        tasks.add(task);
+                    }
+                } catch (Exception e) {
+                     System.out.println("Warning: Error parsing line ignored: " + line);
+                }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error loading tasks: " + e.getMessage());
@@ -206,15 +248,13 @@ public class Mercury {
         return tasks;
     }
 
-    private static void saveTasks(ArrayList<String[]> tasks) {
+    private static void saveTasks(ArrayList<Task> tasks) {
         try {
             File file = new File(FILE_PATH);
             file.getParentFile().mkdirs(); // Ensure directory exists
             FileWriter writer = new FileWriter(file);
-            for (String[] task : tasks) {
-                // Format: Type|Status|Description|Time
-                String line = task[0] + "|" + task[1] + "|" + task[2] + "|" + task[3] + "\n";
-                writer.write(line);
+            for (Task task : tasks) {
+                writer.write(task.toFileString() + "\n");
             }
             writer.close();
         } catch (IOException e) {

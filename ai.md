@@ -6,3 +6,4 @@ UI - used antigravity to come up with the testcases. Took a while for it to get 
 
 Week 4:
 Level-7 - used antigravity to create changes, it messed up a bit but eventually got it to work. Probably easier to manually code it though.
+Level-8 - similar experience as Level-7, but I still continued with antigravity as I am trying to do the entirety of this week's tasks with its help. It ended up creating separate files for each task, which was not what I wanted, but I eventually got it to work.

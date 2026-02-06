@@ -4,6 +4,7 @@ import mercury.task.Task;
 import mercury.task.TaskList;
 import mercury.MercuryException;
 import java.util.Scanner;
+import java.util.List;
 
 /**
  * Handles interactions with the user.
@@ -120,6 +121,22 @@ public class Ui {
                 } catch (MercuryException e) {
                     // This shouldn't happen while iterating size()
                 }
+            }
+        }
+    }
+
+    /**
+     * Displays a list of tasks that matched a search query.
+     *
+     * @param matchingTasks The list of tasks to display.
+     */
+    public void showMatchingTasks(List<Task> matchingTasks) {
+        if (matchingTasks.isEmpty()) {
+            System.out.println("No matching tasks found.");
+        } else {
+            System.out.println("Here are the matching tasks in your list:");
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                System.out.println((i + 1) + ". " + matchingTasks.get(i));
             }
         }
     }

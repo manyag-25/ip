@@ -3,6 +3,7 @@ package mercury.parser;
 import mercury.MercuryException;
 import mercury.command.ExitCommand;
 import mercury.command.AddCommand;
+import mercury.command.FindCommand;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,5 +35,10 @@ public class ParserTest {
             Parser.parse("todo");
         });
         assertEquals("oops todo must be followed by the action item", exception.getMessage());
+    }
+
+    @Test
+    public void parse_find_findCommand() throws MercuryException {
+        assertTrue(Parser.parse("find book") instanceof FindCommand);
     }
 }

@@ -7,6 +7,7 @@ import mercury.command.ExitCommand;
 import mercury.command.ListCommand;
 import mercury.command.MarkCommand;
 import mercury.command.UnmarkCommand;
+import mercury.command.FindCommand;
 import mercury.task.Deadline;
 import mercury.task.Event;
 import mercury.task.Todo;
@@ -44,6 +45,8 @@ public class Parser {
             return parseDeadline(fullCommand);
         } else if (fullCommand.startsWith("event")) {
             return parseEvent(fullCommand);
+        } else if (fullCommand.startsWith("find")) {
+            return parseFind(fullCommand);
         } else {
             throw new MercuryException("I don't understand that command.");
         }
@@ -103,5 +106,13 @@ public class Parser {
         String fromTime = rest.substring(fromIndex + 5, toIndex).trim();
         String toTime = rest.substring(toIndex + 3).trim();
         return new AddCommand(new Event(description, fromTime, toTime));
+    }
+
+    private static Command parseFind(String command) throws MercuryException {
+        String keyword = command.substring(4).trim();
+        if (keyword.isEmpty()) {
+            throw new MercuryException("oops find must be followed by a keyword");
+        }
+        return new FindCommand(keyword);
     }
 }

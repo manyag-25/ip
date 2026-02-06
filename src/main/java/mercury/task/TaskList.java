@@ -1,3 +1,6 @@
+package mercury.task;
+
+import mercury.MercuryException;
 import java.util.ArrayList;
 
 public class TaskList {

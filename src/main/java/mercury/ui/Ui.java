@@ -1,3 +1,8 @@
+package mercury.ui;
+
+import mercury.task.Task;
+import mercury.task.TaskList;
+import mercury.MercuryException;
 import java.util.Scanner;
 
 public class Ui {

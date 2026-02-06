@@ -1,3 +1,11 @@
+package mercury.command;
+
+import mercury.task.Task;
+import mercury.task.TaskList;
+import mercury.ui.Ui;
+import mercury.storage.Storage;
+import mercury.MercuryException;
+
 public class AddCommand extends Command {
     private Task task;
 

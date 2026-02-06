@@ -1,3 +1,12 @@
+package mercury.storage;
+
+import mercury.MercuryException;
+import mercury.task.Task;
+import mercury.task.TaskList;
+import mercury.task.Todo;
+import mercury.task.Deadline;
+import mercury.task.Event;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

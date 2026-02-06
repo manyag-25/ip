@@ -1,3 +1,11 @@
+package mercury;
+
+import mercury.ui.Ui;
+import mercury.storage.Storage;
+import mercury.task.TaskList;
+import mercury.parser.Parser;
+import mercury.command.Command;
+
 public class Mercury {
     
     private Storage storage;

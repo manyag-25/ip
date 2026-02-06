@@ -1,3 +1,10 @@
+package mercury.command;
+
+import mercury.task.TaskList;
+import mercury.ui.Ui;
+import mercury.storage.Storage;
+import mercury.MercuryException;
+
 public abstract class Command {
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws MercuryException;
 

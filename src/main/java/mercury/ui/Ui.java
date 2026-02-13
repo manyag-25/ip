@@ -147,4 +147,13 @@ public class Ui {
     public void showGoodbye() {
         System.out.println("Bye. Hope to see you again soon!");
     }
+
+    /**
+     * Displays a motivational quote to the user.
+     *
+     * @param quote The motivational quote to display.
+     */
+    public void showCheerMessage(String quote) {
+        System.out.println(quote);
+    }
 }

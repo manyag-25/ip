@@ -8,6 +8,7 @@ import mercury.command.ListCommand;
 import mercury.command.MarkCommand;
 import mercury.command.UnmarkCommand;
 import mercury.command.FindCommand;
+import mercury.command.CheerCommand;
 import mercury.task.Deadline;
 import mercury.task.Event;
 import mercury.task.Todo;
@@ -47,6 +48,8 @@ public class Parser {
             return parseEvent(fullCommand);
         } else if (fullCommand.startsWith("find")) {
             return parseFind(fullCommand);
+        } else if (fullCommand.equals("cheer")) {
+            return new CheerCommand();
         } else {
             throw new MercuryException("I don't understand that command.");
         }

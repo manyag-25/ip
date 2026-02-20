@@ -1,44 +1,98 @@
-# Duke project template
+# Mercury – Your Personal Task Assistant
 
-This is a project template for a greenfield Java project. It's named after the Java mascot _Duke_. Given below are instructions on how to use it.
+> "Stay on top of your tasks, one command at a time."
 
-## Setting up in IntelliJ
+Mercury is a fast, CLI + GUI task manager built in Java. It helps you track todos, deadlines, and events with persistent storage and motivational quotes.
 
-Prerequisites: JDK 21.
+---
 
-1. Open IntelliJ (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-1. Open the project into IntelliJ as follows:
-   1. Click `Open`.
-   1. Select the project directory, and click `OK`.
-   1. If there are any further prompts, accept the defaults.
-1. Configure the project to use **JDK 21** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
-   In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Duke.java` file, right-click it, and choose `Run Duke.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
-   ```
-   Hello from
-    ____        _        
-   |  _ \ _   _| | _____ 
-   | | | | | | | |/ / _ \
-   | |_| | |_| |   <  __/
-   |____/ \__,_|_|\_\___|
-   ```
+## Features
 
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+| Feature | Command | Example |
+|---|---|---|
+| Add Todo | `todo <desc>` | `todo buy groceries` |
+| Add Deadline | `deadline <desc> /by <yyyy-mm-dd>` | `deadline submit report /by 2026-03-01` |
+| Add Event | `event <desc> /from <time> /to <time>` | `event team meeting /from 2pm /to 4pm` |
+| List all tasks | `list` | `list` |
+| Mark as done | `mark <n>` | `mark 1` |
+| Unmark task | `unmark <n>` | `unmark 1` |
+| Delete task | `delete <n>` | `delete 2` |
+| Find tasks | `find <keyword>` | `find report` |
+| Motivation | `cheer` | `cheer` |
+| Help | `help` | `help` |
+| Exit | `bye` | `bye` |
+
+---
+
+## Quick Start
+
+### Prerequisites
+- JDK 21
+- Gradle 8.x
+
+### Running the App
+
+```bash
+./gradlew run
+```
+
+Or run the JAR directly:
+
+```bash
+java -jar build/libs/mercury.jar
+```
+
+### Setting up in IntelliJ
+
+1. Open IntelliJ → `File` > `Open` → select the project directory
+2. Set **JDK 21** as the project SDK
+3. Set **Project language level** to `SDK default`
+4. Run `mercury.Launcher.main()`
+
+---
+
+## Task Types
+
+- **[T]** – Todo: a simple task with no date
+- **[D]** – Deadline: a task with a due date (`by: MMM dd yyyy`)
+- **[E]** – Event: a task with a start and end time
+
+Status icons: `[X]` = done, `[ ]` = not done
+
+---
 
 ## Running Tests
 
-The project comes with a set of test scripts for different operating systems:
+```bash
+./gradlew test
+```
 
-- **MacOS/Linux**: Run the shell script
-  ```bash
-  cd text-ui-test
-  ./runtest.sh
-  ```
+For text UI tests:
 
-- **Windows**: Run the batch script
-  ```batch
-  cd text-ui-test
-  runtest.bat
-  ```
+```bash
+cd text-ui-test && ./runtest.sh   # macOS/Linux
+cd text-ui-test && runtest.bat    # Windows
+```
 
-These scripts will compile the source files, run the tests, and compare the output against the expected output.
+---
+
+## Data Storage
+
+Tasks are saved automatically to `./data/duke.txt` in pipe-delimited format:
+
+```
+T| |buy groceries
+D|X|submit report|2026-03-01
+E| |team meeting|(from:2pm to:4pm)
+```
+
+---
+
+## CI/CD
+
+This project uses **GitHub Actions** for continuous integration. On every push to `master` or PR, the CI pipeline:
+
+- [x] Runs all unit tests
+- [x] Builds the shadow JAR
+
+See [`.github/workflows/ci.yml`](.github/workflows/ci.yml) for details.

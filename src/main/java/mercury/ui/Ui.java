@@ -3,8 +3,9 @@ package mercury.ui;
 import mercury.task.Task;
 import mercury.task.TaskList;
 import mercury.MercuryException;
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.IntStream;
 
 /**
  * Handles interactions with the user.
@@ -115,13 +116,13 @@ public class Ui {
             System.out.println("No tasks found.");
         } else {
             System.out.println("Here are the tasks in your list:");
-            for (int i = 0; i < tasks.size(); i++) {
+            IntStream.range(0, tasks.size()).forEach(i -> {
                 try {
                     System.out.println((i + 1) + ". " + tasks.get(i));
                 } catch (MercuryException e) {
-                    // This shouldn't happen while iterating size()
+                    // This should not happen while iterating size()
                 }
-            }
+            });
         }
     }
 
@@ -155,5 +156,23 @@ public class Ui {
      */
     public void showCheerMessage(String quote) {
         System.out.println(quote);
+    }
+
+    /**
+     * Displays the list of supported commands.
+     */
+    public void showHelp() {
+        System.out.println("Here are the commands Mercury understands:");
+        System.out.println("  help");
+        System.out.println("  todo <description>");
+        System.out.println("  deadline <description> /by <yyyy-mm-dd>");
+        System.out.println("  event <description> /from <time> /to <time>");
+        System.out.println("  list");
+        System.out.println("  mark <task number>");
+        System.out.println("  unmark <task number>");
+        System.out.println("  delete <task number>");
+        System.out.println("  find <keyword>");
+        System.out.println("  cheer");
+        System.out.println("  bye");
     }
 }

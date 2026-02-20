@@ -1,0 +1,75 @@
+.root-pane {
+    -fx-background-color: linear-gradient(to bottom right, #1d2b64, #f8cdda);
+    -fx-padding: 16;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.center-pane {
+    -fx-spacing: 12;
+    -fx-padding: 8;
+}
+
+.dialog-container {
+    -fx-spacing: 12;
+    -fx-padding: 12 6 12 6;
+}
+
+.dialog-box {
+    -fx-background-radius: 14;
+    -fx-padding: 10;
+    -fx-alignment: center-left;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 8, 0, 0, 3);
+}
+
+.user-dialog {
+    -fx-background-color: rgba(255, 255, 255, 0.75);
+    -fx-border-color: rgba(255, 255, 255, 0.7);
+    -fx-border-width: 1;
+}
+
+.mercury-dialog {
+    -fx-background-color: rgba(71, 129, 255, 0.16);
+    -fx-border-color: rgba(71, 129, 255, 0.5);
+    -fx-border-width: 1;
+}
+
+.dialog-text {
+    -fx-wrap-text: true;
+    -fx-font-size: 14px;
+    -fx-text-fill: #10172a;
+}
+
+.display-picture {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+.command-hint {
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-font-size: 12px;
+    -fx-opacity: 0.85;
+}
+
+.input-container {
+    -fx-spacing: 8;
+    -fx-padding: 10 0 0 0;
+}
+
+.input-field {
+    -fx-pref-width: 360px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-border-color: rgba(255, 255, 255, 0.6);
+    -fx-border-width: 1;
+}
+
+.send-button {
+    -fx-font-size: 13px;
+    -fx-background-radius: 20;
+    -fx-background-color: linear-gradient(to bottom, #ff8c00, #ff5a00);
+    -fx-text-fill: white;
+    -fx-pref-width: 70px;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}

@@ -2,20 +2,24 @@ package mercury;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import mercury.ui.DialogBox;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.paint.Color;
 
 /**
  * Main JavaFX application class for Mercury chatbot.
@@ -33,67 +37,59 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        // Setup UI components
-        scrollPane = new ScrollPane();
-        dialogContainer = new VBox();
-        scrollPane.setContent(dialogContainer);
+        dialogContainer = new VBox(12);
+        dialogContainer.setPadding(new Insets(8));
+        dialogContainer.getStyleClass().add("dialog-container");
+
+        scrollPane = new ScrollPane(dialogContainer);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setPrefViewportHeight(520);
+        scrollPane.setPannable(true);
+        scrollPane.setStyle("-fx-background: transparent;");
 
         userInput = new TextField();
+        userInput.setPromptText("Try \"help\" for a list of commands.");
+        userInput.getStyleClass().add("input-field");
+
         sendButton = new Button("Send");
+        sendButton.getStyleClass().add("send-button");
 
-        AnchorPane mainLayout = new AnchorPane();
-        mainLayout.getChildren().addAll(scrollPane, userInput, sendButton);
+        HBox inputBox = new HBox(8, userInput, sendButton);
+        inputBox.getStyleClass().add("input-container");
+        HBox.setHgrow(userInput, Priority.ALWAYS);
 
-        scene = new Scene(mainLayout);
+        Label hintLabel = new Label("Commands: help, todo, deadline, event, list, mark, unmark, delete, find, cheer.");
+        hintLabel.getStyleClass().add("command-hint");
+        hintLabel.setWrapText(true);
+        hintLabel.setTextAlignment(TextAlignment.LEFT);
+
+        VBox bottomBar = new VBox(6, inputBox, hintLabel);
+        bottomBar.setPadding(new Insets(4, 4, 8, 4));
+        bottomBar.getStyleClass().add("center-pane");
+
+        BorderPane root = new BorderPane();
+        root.setCenter(scrollPane);
+        root.setBottom(bottomBar);
+        root.getStyleClass().add("root-pane");
+
+        scene = new Scene(root, 420, 620);
+        scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("Mercury");
+        stage.setMinHeight(620.0);
+        stage.setMinWidth(420.0);
         stage.show();
 
-        // Setup layout
-        stage.setMinHeight(600.0);
-        stage.setMinWidth(400.0);
+        dialogContainer.heightProperty().addListener(observable -> scrollPane.setVvalue(1.0));
 
-        mainLayout.setPrefSize(400.0, 600.0);
+        sendButton.setOnMouseClicked(event -> handleUserInput());
+        userInput.setOnAction(event -> handleUserInput());
 
-        scrollPane.setPrefSize(385, 535);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
-        scrollPane.setVvalue(1.0);
-        scrollPane.setFitToWidth(true);
-
-        dialogContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
-        userInput.setPrefWidth(325.0);
-
-        sendButton.setPrefWidth(55.0);
-
-        AnchorPane.setTopAnchor(scrollPane, 1.0);
-
-        AnchorPane.setBottomAnchor(sendButton, 1.0);
-        AnchorPane.setRightAnchor(sendButton, 1.0);
-
-        AnchorPane.setLeftAnchor(userInput, 1.0);
-        AnchorPane.setBottomAnchor(userInput, 1.0);
-
-        // Setup event handlers
-        sendButton.setOnMouseClicked((event) -> {
-            handleUserInput();
-        });
-
-        userInput.setOnAction((event) -> {
-            handleUserInput();
-        });
-
-        // Scroll down to the end automatically
-        dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
-
-        // Display welcome message
         String welcome = mercury.getWelcomeMessage();
-        dialogContainer.getChildren().add(
-            DialogBox.getMercuryDialog(welcome, mercuryImage)
-        );
+        dialogContainer.getChildren().add(DialogBox.getMercuryDialog(welcome, mercuryImage));
     }
 
     /**
@@ -101,8 +97,11 @@ public class Main extends Application {
      */
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = mercury.getResponse(input);
+        if (input == null || input.trim().isEmpty()) {
+            return;
+        }
 
+        String response = mercury.getResponse(input);
         dialogContainer.getChildren().addAll(
             DialogBox.getUserDialog(input, userImage),
             DialogBox.getMercuryDialog(response, mercuryImage)
@@ -110,8 +109,7 @@ public class Main extends Application {
 
         userInput.clear();
 
-        // Exit if bye command
-        if (input.trim().equals("bye")) {
+        if ("bye".equals(input.trim())) {
             Platform.exit();
         }
     }
@@ -127,7 +125,6 @@ public class Main extends Application {
         WritableImage image = new WritableImage(size, size);
         PixelWriter writer = image.getPixelWriter();
 
-        // Draw a simple filled circle
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 double dx = x - size / 2.0;

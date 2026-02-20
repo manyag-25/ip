@@ -31,6 +31,10 @@ public class DialogBox extends HBox {
         displayPicture.setFitWidth(100.0);
         displayPicture.setFitHeight(100.0);
 
+        text.getStyleClass().add("dialog-text");
+        displayPicture.getStyleClass().add("display-picture");
+        this.getStyleClass().add("dialog-box");
+
         this.setAlignment(Pos.TOP_RIGHT);
         this.getChildren().addAll(text, displayPicture);
     }
@@ -53,8 +57,10 @@ public class DialogBox extends HBox {
      * @return A DialogBox representing the user's message.
      */
     public static DialogBox getUserDialog(String s, Image i) {
-        return new DialogBox(s, i);
-    }
+        var db = new DialogBox(s, i);
+        db.getStyleClass().add("user-dialog");
+        return db;
+}
 
     /**
      * Creates a dialog box for Mercury's responses.
@@ -66,6 +72,7 @@ public class DialogBox extends HBox {
     public static DialogBox getMercuryDialog(String s, Image i) {
         var db = new DialogBox(s, i);
         db.flip();
+        db.getStyleClass().add("mercury-dialog");
         return db;
     }
 }

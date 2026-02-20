@@ -1,14 +1,15 @@
 package mercury.parser;
 
 import mercury.command.AddCommand;
+import mercury.command.CheerCommand;
 import mercury.command.Command;
 import mercury.command.DeleteCommand;
 import mercury.command.ExitCommand;
+import mercury.command.FindCommand;
+import mercury.command.HelpCommand;
 import mercury.command.ListCommand;
 import mercury.command.MarkCommand;
 import mercury.command.UnmarkCommand;
-import mercury.command.FindCommand;
-import mercury.command.CheerCommand;
 import mercury.task.Deadline;
 import mercury.task.Event;
 import mercury.task.Todo;
@@ -48,6 +49,8 @@ public class Parser {
             return parseEvent(fullCommand);
         } else if (fullCommand.startsWith("find")) {
             return parseFind(fullCommand);
+        } else if (fullCommand.equals("help")) {
+            return new HelpCommand();
         } else if (fullCommand.equals("cheer")) {
             return new CheerCommand();
         } else {

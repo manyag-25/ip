@@ -6,7 +6,6 @@ import mercury.task.Task;
 import mercury.task.TaskList;
 import mercury.ui.Ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,13 +25,9 @@ public class FindCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MercuryException {
-        List<Task> matchingTasks = new ArrayList<>();
-        ArrayList<Task> allTasks = tasks.getAllTasks();
-        for (Task task : allTasks) {
-            if (task.toString().contains(keyword)) {
-                matchingTasks.add(task);
-            }
-        }
+        List<Task> matchingTasks = tasks.getAllTasks().stream()
+            .filter(task -> task.toString().contains(keyword))
+            .toList();
         ui.showMatchingTasks(matchingTasks);
     }
 }

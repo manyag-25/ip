@@ -16,6 +16,7 @@ public class TaskList {
      * @param tasks The initial list of tasks.
      */
     public TaskList(ArrayList<Task> tasks) {
+        assert tasks != null : "Task list must not be null";
         this.tasks = tasks;
     }
 
@@ -23,7 +24,7 @@ public class TaskList {
      * Constructs an empty TaskList.
      */
     public TaskList() {
-        this.tasks = new ArrayList<>();
+        this(new ArrayList<>());
     }
 
     /**
@@ -32,6 +33,7 @@ public class TaskList {
      * @param task The task to add.
      */
     public void add(Task task) {
+        assert task != null : "Task must not be null";
         tasks.add(task);
     }
 
@@ -43,6 +45,8 @@ public class TaskList {
      * @throws MercuryException If the index is out of bounds.
      */
     public Task delete(int index) throws MercuryException {
+        assert index >= 0 : "Index must not be negative";
+        assert tasks != null : "Tasks should be initialized";
         if (index < 0 || index >= tasks.size()) {
             throw new MercuryException("oops that task number doesn't exist");
         }
@@ -57,6 +61,8 @@ public class TaskList {
      * @throws MercuryException If the index is out of bounds.
      */
     public Task get(int index) throws MercuryException {
+        assert index >= 0 : "Index must not be negative";
+        assert tasks != null : "Tasks should be initialized";
         if (index < 0 || index >= tasks.size()) {
             throw new MercuryException("oops that task number doesn't exist");
         }
@@ -78,6 +84,7 @@ public class TaskList {
      * @return The ArrayList of tasks.
      */
     public ArrayList<Task> getAllTasks() {
+        assert tasks != null : "Tasks should be initialized";
         return tasks;
     }
 }

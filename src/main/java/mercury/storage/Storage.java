@@ -1,25 +1,29 @@
 package mercury.storage;
 
 import mercury.MercuryException;
+import mercury.task.Deadline;
+import mercury.task.Event;
 import mercury.task.Task;
 import mercury.task.TaskList;
 import mercury.task.Todo;
-import mercury.task.Deadline;
-import mercury.task.Event;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
-import java.util.Scanner;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
 
 /**
  * Handles the loading and saving of tasks to a file.
  */
 public class Storage {
-    private String filePath;
+    private final String filePath;
+    private final Path path;
 
     /**
      * Constructs a new Storage instance.
@@ -27,70 +31,30 @@ public class Storage {
      * @param filePath The path to the file used for storage.
      */
     public Storage(String filePath) {
-        this.filePath = filePath;
+        this.filePath = Objects.requireNonNull(filePath, "File path must not be null");
+        this.path = Path.of(this.filePath);
     }
 
     /**
      * Loads tasks from the storage file.
      *
      * @return An ArrayList of tasks loaded from the file.
-     * @throws MercuryException If the file cannot be accessed or created.
+     * @throws MercuryException If the file cannot be accessed.
      */
     public ArrayList<Task> load() throws MercuryException {
         ArrayList<Task> tasks = new ArrayList<>();
-        File file = new File(filePath);
-        if (!file.exists()) {
+        if (!Files.exists(path)) {
             return tasks;
         }
-
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner(path)) {
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split("\\|");
-                if (parts.length < 3) {
-                    continue; // corrupt
-                }
-
-                String type = parts[0];
-                String status = parts[1];
-                String description = parts[2];
-                
-                Task task = null;
-                switch (type) {
-                    case "T":
-                        task = new Todo(description);
-                        break;
-                    case "D":
-                         if (parts.length >= 4) {
-                            task = new Deadline(description, LocalDate.parse(parts[3]));
-                         }
-                        break;
-                    case "E":
-                        if (parts.length >= 4) {
-                            String timeInfo = parts[3];
-                            if (timeInfo.startsWith("(from:") && timeInfo.contains(" to:") && timeInfo.endsWith(")")) {
-                                int toIndex = timeInfo.indexOf(" to:");
-                                String from = timeInfo.substring(6, toIndex);
-                                String to = timeInfo.substring(toIndex + 4, timeInfo.length() - 1);
-                                task = new Event(description, from, to);
-                            }
-                        }
-                        break;
-                }
-                
+                Task task = parseLine(scanner.nextLine());
                 if (task != null) {
-                    if (status.equals("X")) {
-                        task.markAsDone();
-                    }
                     tasks.add(task);
                 }
             }
-        } catch (FileNotFoundException e) {
-            throw new MercuryException("Error loading file");
-        } catch (Exception e) {
-            // ignore corrupt lines? or warn? 
-            // Previous implementation warned, keeping it simple here or re-implement warning if needed.
-            // But Storage usually just throws Exception to main, or handles it quietly.
+        } catch (IOException e) {
+            throw new MercuryException("Error loading file: " + e.getMessage());
         }
         return tasks;
     }
@@ -102,16 +66,71 @@ public class Storage {
      * @throws MercuryException If the file cannot be written to.
      */
     public void save(TaskList tasks) throws MercuryException {
+        Objects.requireNonNull(tasks, "Task list must not be null");
         try {
-            File file = new File(filePath);
-            file.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(file);
-            for (Task task : tasks.getAllTasks()) {
-                writer.write(task.toFileString() + "\n");
+            Path directory = path.getParent();
+            if (directory != null) {
+                Files.createDirectories(directory);
             }
-            writer.close();
+            try (BufferedWriter writer = Files.newBufferedWriter(
+                    path,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING)) {
+                for (Task task : tasks.getAllTasks()) {
+                    writer.write(task.toFileString());
+                    writer.newLine();
+                }
+            }
         } catch (IOException e) {
             throw new MercuryException("Error saving file: " + e.getMessage());
         }
+    }
+
+    private Task parseLine(String line) {
+        if (line == null || line.isBlank()) {
+            return null;
+        }
+        String[] parts = line.split("\\|");
+        if (parts.length < 3) {
+            return null;
+        }
+        char type = parts[0].charAt(0);
+        String status = parts[1];
+        Task task = switch (type) {
+            case 'T' -> new Todo(parts[2]);
+            case 'D' -> parseDeadline(parts);
+            case 'E' -> parseEvent(parts);
+            default -> null;
+        };
+        if (task != null && "X".equals(status)) {
+            task.markAsDone();
+        }
+        return task;
+    }
+
+    private Task parseDeadline(String[] parts) {
+        if (parts.length < 4) {
+            return null;
+        }
+        try {
+            LocalDate date = LocalDate.parse(parts[3]);
+            return new Deadline(parts[2], date);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    private Task parseEvent(String[] parts) {
+        if (parts.length < 4) {
+            return null;
+        }
+        String timeInfo = parts[3];
+        if (timeInfo.startsWith("(from:") && timeInfo.contains(" to:") && timeInfo.endsWith(")")) {
+            int toIndex = timeInfo.indexOf(" to:");
+            String from = timeInfo.substring(6, toIndex);
+            String to = timeInfo.substring(toIndex + 4, timeInfo.length() - 1);
+            return new Event(parts[2], from, to);
+        }
+        return null;
     }
 }

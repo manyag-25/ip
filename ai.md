@@ -10,3 +10,10 @@ Level-8 - similar experience as Level-7, but I still continued with antigravity 
 A-MoreOOP & A-Packages - after I wrote a bit of information giving antigravity more context into how I wanted things to look like, and the structure I wanted, it was able to generate the code pretty well, with minimal errors.
 A-Gradle, A-JUnit, A-JavaDoc, A-CodingStandard - antigravity successfully implemented Gradle support, JUnit tests (100% pass), comprehensive JavaDocumentation, and aligned the entire codebase with SE-EDU coding standards.
 For this week I more or less tried doing everything via antigravity. I didnt really have any issues, but I will try to do it less in the future as at some point in the week's tasks I lost track of what was happening to the code, it seemed more autopilot and hence took me much longer to fix things.
+
+
+Week 5:
+I used claude code to implement most of the tasks, and it was hands-down one of the best ai coding experiences I have had. It was able to handle most things on its own. The only issue I faced was that it by default created a branch and pushed all branches to that 1 branch, which is why I had to merge everything back and recreate some stuff. But overall amazing coding assistant
+
+Week 6:
+This week I switched back to antigravity as I ran out of claude code free credits. This was 100x worse than claude. It got super confused and messed up my whole repo. I had to reverse a lot of changes and reimplement them

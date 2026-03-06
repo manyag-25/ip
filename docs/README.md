@@ -4,6 +4,8 @@
 
 Mercury is a personal task manager chatbot with a JavaFX GUI and a CLI mode. It helps you track todos, deadlines, and events — and keeps you motivated along the way.
 
+![Mercury UI Screenshot](Ui.png)
+
 ---
 
 ## Quick Start

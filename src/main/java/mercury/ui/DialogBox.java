@@ -1,78 +1,64 @@
 package mercury.ui;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 /**
- * Represents a dialog box consisting of an ImageView to represent the speaker's face
- * and a label containing text from the speaker.
+ * Represents a dialog box for displaying chat messages.
+ * User messages are right-aligned; Mercury messages are left-aligned;
+ * error messages are left-aligned with distinct error styling.
  */
 public class DialogBox extends HBox {
     private Label text;
-    private ImageView displayPicture;
 
-    /**
-     * Constructs a DialogBox with the given text and image.
-     *
-     * @param s The text to display.
-     * @param i The image to display.
-     */
-    public DialogBox(String s, Image i) {
+    private DialogBox(String s) {
         text = new Label(s);
-        displayPicture = new ImageView(i);
-
         text.setWrapText(true);
-        displayPicture.setFitWidth(100.0);
-        displayPicture.setFitHeight(100.0);
-
+        text.setMaxWidth(Double.MAX_VALUE);
         text.getStyleClass().add("dialog-text");
-        displayPicture.getStyleClass().add("display-picture");
         this.getStyleClass().add("dialog-box");
-
-        this.setAlignment(Pos.TOP_RIGHT);
-        this.getChildren().addAll(text, displayPicture);
+        HBox.setHgrow(text, Priority.ALWAYS);
+        this.getChildren().add(text);
     }
 
     /**
-     * Flips the dialog box such that the ImageView is on the left and text on the right.
-     */
-    private void flip() {
-        this.setAlignment(Pos.TOP_LEFT);
-        ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
-        FXCollections.reverse(tmp);
-        this.getChildren().setAll(tmp);
-    }
-
-    /**
-     * Creates a dialog box for user messages.
+     * Creates a dialog box for user messages (right-aligned).
      *
-     * @param s The user's message.
-     * @param i The user's image.
-     * @return A DialogBox representing the user's message.
+     * @param s The user's message text.
+     * @return A DialogBox styled for user input.
      */
-    public static DialogBox getUserDialog(String s, Image i) {
-        var db = new DialogBox(s, i);
+    public static DialogBox getUserDialog(String s) {
+        var db = new DialogBox(s);
+        db.setAlignment(Pos.CENTER_RIGHT);
         db.getStyleClass().add("user-dialog");
         return db;
-}
+    }
 
     /**
-     * Creates a dialog box for Mercury's responses.
+     * Creates a dialog box for Mercury's responses (left-aligned).
      *
-     * @param s Mercury's response.
-     * @param i Mercury's image.
-     * @return A DialogBox representing Mercury's response.
+     * @param s Mercury's response text.
+     * @return A DialogBox styled for Mercury output.
      */
-    public static DialogBox getMercuryDialog(String s, Image i) {
-        var db = new DialogBox(s, i);
-        db.flip();
+    public static DialogBox getMercuryDialog(String s) {
+        var db = new DialogBox(s);
+        db.setAlignment(Pos.CENTER_LEFT);
         db.getStyleClass().add("mercury-dialog");
+        return db;
+    }
+
+    /**
+     * Creates a dialog box for error responses (left-aligned, highlighted in red).
+     *
+     * @param s The error message text.
+     * @return A DialogBox styled to highlight errors.
+     */
+    public static DialogBox getErrorDialog(String s) {
+        var db = new DialogBox(s);
+        db.setAlignment(Pos.CENTER_LEFT);
+        db.getStyleClass().add("error-dialog");
         return db;
     }
 }

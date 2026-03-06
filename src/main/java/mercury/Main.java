@@ -8,15 +8,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import mercury.ui.DialogBox;
@@ -32,9 +27,6 @@ public class Main extends Application {
     private Button sendButton;
     private Scene scene;
 
-    private Image userImage = createPlaceholderImage(Color.LIGHTBLUE);
-    private Image mercuryImage = createPlaceholderImage(Color.LIGHTGREEN);
-
     @Override
     public void start(Stage stage) {
         dialogContainer = new VBox(12);
@@ -44,10 +36,10 @@ public class Main extends Application {
         scrollPane = new ScrollPane(dialogContainer);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setPrefViewportHeight(520);
         scrollPane.setPannable(true);
-        scrollPane.setStyle("-fx-background: transparent;");
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
         userInput = new TextField();
         userInput.setPromptText("Try \"help\" for a list of commands.");
@@ -60,7 +52,8 @@ public class Main extends Application {
         inputBox.getStyleClass().add("input-container");
         HBox.setHgrow(userInput, Priority.ALWAYS);
 
-        Label hintLabel = new Label("Commands: help, todo, deadline, event, list, mark, unmark, delete, find, cheer.");
+        Label hintLabel = new Label(
+                "Commands: help  todo  deadline  event  list  mark  unmark  delete  find  stats  cheer  bye");
         hintLabel.getStyleClass().add("command-hint");
         hintLabel.setWrapText(true);
         hintLabel.setTextAlignment(TextAlignment.LEFT);
@@ -74,13 +67,13 @@ public class Main extends Application {
         root.setBottom(bottomBar);
         root.getStyleClass().add("root-pane");
 
-        scene = new Scene(root, 420, 620);
+        scene = new Scene(root, 440, 640);
         scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("Mercury");
-        stage.setMinHeight(620.0);
-        stage.setMinWidth(420.0);
+        stage.setMinHeight(400.0);
+        stage.setMinWidth(360.0);
         stage.show();
 
         dialogContainer.heightProperty().addListener(observable -> scrollPane.setVvalue(1.0));
@@ -89,11 +82,12 @@ public class Main extends Application {
         userInput.setOnAction(event -> handleUserInput());
 
         String welcome = mercury.getWelcomeMessage();
-        dialogContainer.getChildren().add(DialogBox.getMercuryDialog(welcome, mercuryImage));
+        dialogContainer.getChildren().add(DialogBox.getMercuryDialog(welcome));
     }
 
     /**
      * Handles user input by processing the command and displaying the response.
+     * Error responses are shown in a distinct red-highlighted dialog box.
      */
     private void handleUserInput() {
         String input = userInput.getText();
@@ -101,10 +95,14 @@ public class Main extends Application {
             return;
         }
 
-        String response = mercury.getResponse(input);
+        MercuryResponse response = mercury.getResponseObject(input);
+        DialogBox replyBox = response.isError()
+                ? DialogBox.getErrorDialog(response.getMessage())
+                : DialogBox.getMercuryDialog(response.getMessage());
+
         dialogContainer.getChildren().addAll(
-            DialogBox.getUserDialog(input, userImage),
-            DialogBox.getMercuryDialog(response, mercuryImage)
+            DialogBox.getUserDialog(input),
+            replyBox
         );
 
         userInput.clear();
@@ -112,33 +110,5 @@ public class Main extends Application {
         if ("bye".equals(input.trim())) {
             Platform.exit();
         }
-    }
-
-    /**
-     * Creates a simple placeholder image with the specified color.
-     *
-     * @param color The color of the placeholder circle.
-     * @return A simple circular image.
-     */
-    private Image createPlaceholderImage(Color color) {
-        int size = 100;
-        WritableImage image = new WritableImage(size, size);
-        PixelWriter writer = image.getPixelWriter();
-
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                double dx = x - size / 2.0;
-                double dy = y - size / 2.0;
-                double distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < size / 2.0) {
-                    writer.setColor(x, y, color);
-                } else {
-                    writer.setColor(x, y, Color.TRANSPARENT);
-                }
-            }
-        }
-
-        return image;
     }
 }

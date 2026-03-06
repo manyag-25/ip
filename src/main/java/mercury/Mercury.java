@@ -74,10 +74,25 @@ public class Mercury {
      */
     public String getResponse(String input) {
         try {
-            Command c = Parser.parse(input);
+            Command c = Parser.parse(input.trim());
             return executeCommand(c);
         } catch (MercuryException e) {
             return e.getMessage();
+        }
+    }
+
+    /**
+     * Gets the response for a user command, including error status.
+     *
+     * @param input The user's command.
+     * @return A MercuryResponse containing the message and whether it is an error.
+     */
+    public MercuryResponse getResponseObject(String input) {
+        try {
+            Command c = Parser.parse(input.trim());
+            return new MercuryResponse(executeCommand(c), false);
+        } catch (MercuryException e) {
+            return new MercuryResponse(e.getMessage(), true);
         }
     }
 

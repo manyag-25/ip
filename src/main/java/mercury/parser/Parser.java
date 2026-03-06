@@ -9,6 +9,7 @@ import mercury.command.FindCommand;
 import mercury.command.HelpCommand;
 import mercury.command.ListCommand;
 import mercury.command.MarkCommand;
+import mercury.command.StatsCommand;
 import mercury.command.UnmarkCommand;
 import mercury.task.Deadline;
 import mercury.task.Event;
@@ -53,6 +54,8 @@ public class Parser {
             return new HelpCommand();
         } else if (fullCommand.equals("cheer")) {
             return new CheerCommand();
+        } else if (fullCommand.equals("stats")) {
+            return new StatsCommand();
         } else {
             throw new MercuryException("I don't understand that command.");
         }

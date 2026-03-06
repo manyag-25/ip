@@ -58,12 +58,13 @@ public class Mercury {
     }
 
     /**
-     * Gets the welcome message.
+     * Gets the welcome message with Mercury's personality.
      *
      * @return The welcome message string.
      */
     public String getWelcomeMessage() {
-        return "Hello! I'm Mercury\nWhat can I do for you?";
+        return "Greetings! I'm Mercury — swift messenger of the gods.\n"
+                + "Your tasks are my missions. What shall I carry for you today?";
     }
 
     /**

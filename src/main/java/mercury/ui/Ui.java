@@ -25,8 +25,8 @@ public class Ui {
      * Displays the welcome message to the user.
      */
     public void showWelcome() {
-        String name = "Mercury";
-        System.out.println("Hello! I'm " + name + "\n" + "What can I do for you?");
+        System.out.println("Greetings! I'm Mercury — swift messenger of the gods.");
+        System.out.println("Your tasks are my missions. What shall I carry for you today?");
         showLine();
     }
 
@@ -69,9 +69,9 @@ public class Ui {
      * @param size The new total number of tasks.
      */
     public void showTaskAdded(Task task, int size) {
-        System.out.println("Got it. I've added this task:");
+        System.out.println("Mission logged! Swift delivery guaranteed:");
         System.out.println("  " + task);
-        System.out.println("Now you have " + size + " tasks in the list.");
+        System.out.println("You now have " + size + " mission(s) in your scroll.");
     }
 
     /**
@@ -81,9 +81,9 @@ public class Ui {
      * @param size The new total number of tasks.
      */
     public void showTaskDeleted(Task task, int size) {
-        System.out.println("Noted. I've removed this task:");
+        System.out.println("Message recalled. This mission has been erased:");
         System.out.println("  " + task);
-        System.out.println("Now you have " + size + " tasks in the list.");
+        System.out.println("You now have " + size + " mission(s) remaining.");
     }
 
     /**
@@ -92,7 +92,7 @@ public class Ui {
      * @param task The task that was marked.
      */
     public void showTaskMarked(Task task) {
-        System.out.println("I've marked this task as done:");
+        System.out.println("Delivered! Mission accomplished:");
         System.out.println("  " + task);
     }
 
@@ -102,7 +102,7 @@ public class Ui {
      * @param task The task that was unmarked.
      */
     public void showTaskUnmarked(Task task) {
-        System.out.println("OK, I've marked this task as not done yet:");
+        System.out.println("Understood — mission back in transit:");
         System.out.println("  " + task);
     }
 
@@ -146,7 +146,7 @@ public class Ui {
      * Displays the goodbye message to the user.
      */
     public void showGoodbye() {
-        System.out.println("Bye. Hope to see you again soon!");
+        System.out.println("Until next time! May your path be swift and your tasks few.");
     }
 
     /**
@@ -162,17 +162,18 @@ public class Ui {
      * Displays the list of supported commands.
      */
     public void showHelp() {
-        System.out.println("Here are the commands Mercury understands:");
-        System.out.println("  help");
-        System.out.println("  todo <description>");
-        System.out.println("  deadline <description> /by <yyyy-mm-dd>");
-        System.out.println("  event <description> /from <time> /to <time>");
-        System.out.println("  list");
-        System.out.println("  mark <task number>");
-        System.out.println("  unmark <task number>");
-        System.out.println("  delete <task number>");
-        System.out.println("  find <keyword>");
-        System.out.println("  cheer");
-        System.out.println("  bye");
+        System.out.println("Mercury's Message Board — Available Commands:");
+        System.out.println("  help                                   — view this scroll");
+        System.out.println("  todo <description>                     — log a simple mission");
+        System.out.println("  deadline <description> /by <yyyy-mm-dd> — mission with a deadline");
+        System.out.println("  event <description> /from <time> /to <time> — timed mission");
+        System.out.println("  list                                   — read all missions");
+        System.out.println("  mark <task number>                     — mark mission complete");
+        System.out.println("  unmark <task number>                   — mark mission incomplete");
+        System.out.println("  delete <task number>                   — recall a mission");
+        System.out.println("  find <keyword>                         — search the scroll");
+        System.out.println("  stats                                  — view mission statistics");
+        System.out.println("  cheer                                  — receive divine inspiration");
+        System.out.println("  bye                                    — dismiss Mercury");
     }
 }

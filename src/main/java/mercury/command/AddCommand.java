@@ -23,6 +23,13 @@ public class AddCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MercuryException {
+        String newTaskString = task.toString();
+        for (Task existing : tasks.getAllTasks()) {
+            if (existing.toString().equals(newTaskString)) {
+                throw new MercuryException("A task with the same details already exists:\n  " + existing
+                        + "\nDuplicate tasks are not allowed.");
+            }
+        }
         tasks.add(task);
         ui.showTaskAdded(task, tasks.size());
         storage.save(tasks);

@@ -176,4 +176,23 @@ public class Ui {
         System.out.println("  cheer                                  — receive divine inspiration");
         System.out.println("  bye                                    — dismiss Mercury");
     }
+
+    /**
+     * Displays task statistics including total, done, pending, and counts by type.
+     *
+     * @param total     Total number of tasks.
+     * @param done      Number of completed tasks.
+     * @param todos     Number of Todo tasks.
+     * @param deadlines Number of Deadline tasks.
+     * @param events    Number of Event tasks.
+     */
+    public void showStats(int total, int done, int todos, int deadlines, int events) {
+        System.out.println("Task Statistics:");
+        System.out.println("  Total tasks  : " + total);
+        System.out.println("  Done         : " + done);
+        System.out.println("  Pending      : " + (total - done));
+        System.out.println("  Todos        : " + todos);
+        System.out.println("  Deadlines    : " + deadlines);
+        System.out.println("  Events       : " + events);
+    }
 }

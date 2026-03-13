@@ -17,6 +17,14 @@ javafx {
 dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
+
+    // Bundle JavaFX native libs for all platforms so the fat jar runs on any OS
+    ['win', 'mac', 'mac-aarch64', 'linux', 'linux-aarch64'].each { platform ->
+        implementation "org.openjfx:javafx-base:21.0.1:${platform}"
+        implementation "org.openjfx:javafx-controls:21.0.1:${platform}"
+        implementation "org.openjfx:javafx-fxml:21.0.1:${platform}"
+        implementation "org.openjfx:javafx-graphics:21.0.1:${platform}"
+    }
 }
 
 test {

@@ -211,6 +211,24 @@ Mercury provides clear error messages for invalid input:
 
 ---
 
+## Deployment
+
+To build the JAR yourself from source:
+
+1. Ensure **Java 21** and **Gradle** are installed.
+2. Clone the repository and navigate to the project root.
+3. Run:
+   ```
+   ./gradlew shadowJar
+   ```
+4. The JAR will be generated at `build/libs/mercury.jar`.
+5. Run it with:
+   ```
+   java -jar build/libs/mercury.jar
+   ```
+
+---
+
 ## FAQ
 
 **Q: Can I use the app from the command line?**

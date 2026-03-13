@@ -26,7 +26,7 @@ public class ParserTest {
         Exception exception = assertThrows(MercuryException.class, () -> {
             Parser.parse("blah");
         });
-        assertEquals("I don't understand that command.", exception.getMessage());
+        assertEquals("I don't understand 'blah'. Type 'help' to see available commands.", exception.getMessage());
     }
     
     @Test
@@ -34,7 +34,7 @@ public class ParserTest {
          Exception exception = assertThrows(MercuryException.class, () -> {
             Parser.parse("todo");
         });
-        assertEquals("oops todo must be followed by the action item", exception.getMessage());
+        assertEquals("todo requires a description (e.g., todo buy groceries).", exception.getMessage());
     }
 
     @Test
